@@ -7,3 +7,4 @@
 3. Then run seed for books:  ```nx seed api```
 4. Run backend ```nx serve api```
 5. Run frontend ```nx serve client```
+6. ```localhost:3000/docs```: swagger link
