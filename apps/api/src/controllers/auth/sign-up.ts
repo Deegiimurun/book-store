@@ -42,12 +42,16 @@ const SignUp: Handler = async (req, res) => {
     }
   );
 
-  res.cookie("jwt", token, {
-    httpOnly: true,
-    maxAge: JWT_MAX_AGE * 1000,
+  res.send({
+    result:
+      {
+        user,
+        token : {
+          token,
+          expiresIn: JWT_MAX_AGE / 60
+        }
+      }
   });
-
-  res.send({ result: user })
 }
 
 export { SignUp }

@@ -1,19 +1,44 @@
-import { FC } from "react";
-import { an } from "vitest/dist/reporters-5f784f42";
-import { Typography } from "@mui/material";
+import { FC } from 'react';
+import { Button, Typography } from '@mui/material';
+import { useAuthUser } from 'react-auth-kit';
 
 interface IBook {
-  book: any
+  book: any;
 }
 
-const Book: FC<IBook> = ({book}) => {
+const Book: FC<IBook> = ({ book }) => {
+  const user = useAuthUser();
+
+  const orderBook = async () => {
+    const result = await fetch("/api/orders", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        bookId: book.id
+      })
+    });
+
+    console.log(await result.json());
+  };
+
+  const login = async () => {};
+
   return (
     <div>
-      <img src={book.coverUrl} alt=""/>
+      <img src={book.coverUrl} alt="" />
       <Typography>Title: {book.title}</Typography>
       <Typography>Author: {book.writer}</Typography>
+      <Typography>Quantity: {book.quantity}</Typography>
+      {user() ? (
+        <Button onClick={orderBook}>Order</Button>
+      ) : (
+        <Button onClick={login}>Login</Button>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default Book
+export default Book;

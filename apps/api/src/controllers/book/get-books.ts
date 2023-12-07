@@ -6,7 +6,12 @@ const getBooks: Handler = async (req, res) => {
 
   const books = await Book.find({
       skip: (+page - 1) * +limit,
-      take: +limit
+      take: +limit,
+      order: {
+        id: {
+          direction: "asc"
+        }
+      }
     })
 
   res.send({ result: books })

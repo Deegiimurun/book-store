@@ -5,7 +5,7 @@ import { getBook } from "./get-book";
 
 const bookRouter = express.Router();
 
-bookRouter.get('/', paginate.middleware(10, 50) ,getBooks);
+bookRouter.get('/', paginate.middleware(10, 50), getBooks);
 bookRouter.get('/:bookId', getBook);
 
 export { bookRouter };

@@ -1,32 +1,39 @@
-import { FC, useEffect, useState } from 'react';
-import Book from './book';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import { useSignIn } from 'react-auth-kit';
+import { FC, useEffect, useState } from "react";
+import Book from "./book";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useAuthUser, useIsAuthenticated, useSignIn } from "react-auth-kit";
+
 const BookList: FC = () => {
-  const signIn = useSignIn()
+  const user = useAuthUser();
+  const signIn = useSignIn();
+  const isAuthenticated = useIsAuthenticated();
   const [page, setPage] = useState(1);
   const [books, setBooks] = useState<Array<any>>([]);
 
   useEffect(() => {
     (async () => {
-      let result = await fetch('/api/auth/sign-in', {
-        method: 'POST',
+      const result = await fetch("/api/auth/sign-in", {
+        method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          "Accept": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          username: 'user',
-          password: 'password',
+          username: "user",
+          password: "password"
         })
-      })
-      signIn({
-        expiresIn: 0,
-        token: "",
-        tokenType: undefined
       });
-    })()
-  }, [])
+
+      const { user, token } = (await result.json()).result;
+
+      signIn({
+        expiresIn: token.expiresIn,
+        token: token.token,
+        tokenType: 'Bearer',
+        authState: user
+      });
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -48,14 +55,9 @@ const BookList: FC = () => {
       }}
       hasMore={true}
       loader={<h4>Loading...</h4>}
-      endMessage={
-        <p style={{ textAlign: 'center' }}>
-          <b>Yay! You have seen it all</b>
-        </p>
-      }
     >
       <div className="grid grid-cols-3">
-        {books.map(function (book: any) {
+        {books.map(function(book: any) {
           return <Book book={book} key={book.id} />;
         })}
       </div>
